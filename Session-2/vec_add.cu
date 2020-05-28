@@ -37,10 +37,10 @@ int main(){
     C_h[i] = 0;
     }
 
-  cudaMalloc(&A_d, DATA_SIZE*sizeof(float));  // allocate memory for device vectors
+  cudaMalloc(&A_d, DATA_SIZE*sizeof(float));  //allocate memory for device vectors
   cudaMalloc(&B_d, DATA_SIZE*sizeof(float));  
   cudaMalloc(&C_d, DATA_SIZE*sizeof(float));  
-  cudaCheck("Error in cudaMallocs"); // check if any errors during memory allocation on device
+  cudaCheck("Error in cudaMallocs"); //check if any errors during memory allocation on device
   // copy host vectors to device
   cudaMemcpy(A_d, A_h, DATA_SIZE*sizeof(float), cudaMemcpyHostToDevice);
   cudaMemcpy(B_d, B_h, DATA_SIZE*sizeof(float), cudaMemcpyHostToDevice);
@@ -51,7 +51,7 @@ int main(){
 
   //uncomment the below kernel for studying launch configurations
   //vector_add_kernel<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE);
-  
+
   //uncomment the below kernel for studying memory caching
   vector_add_kernel_memory<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE, 2);
   cudaCheck("kernel launch error");
