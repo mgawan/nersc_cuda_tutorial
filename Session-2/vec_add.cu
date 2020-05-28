@@ -14,16 +14,13 @@
     } while (0)
 
 
-#define DATA_SIZE 500000000
+#define DATA_SIZE 1024*1024*32
 // kernel
+void result_check(float *A, float *B, float *C);
 __global__ 
-void vector_add_kernel(const float *A, const float *B, float *C, int size){
-  int idx = threadIdx.x + blockIdx.x * blockDim.x;
-  int total_threads = gridDim.x*blockDim.x;
-
-  for(int i = idx; i < size; i+=total_threads)
-    C[i] = A[i] + B[i]; // do the vector (element) add here
-}
+void vector_add_kernel(const float *A, const float *B, float *C, int size);
+__global__ 
+void vector_add_kernel_memory(const float *A, const float *B, float *C, int size, int stride_size);
 
 int main(){
 
@@ -52,16 +49,20 @@ int main(){
   int blocks = 4;  // to set number of blocks
   int threads = 512; // to set number of threads per block
 
-  //launch kernel
-  vector_add_kernel<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE);
+  //uncomment the below kernel for studying launch configurations
+  //vector_add_kernel<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE);
+  
+  //uncomment the below kernel for studying memory caching
+  vector_add_kernel_memory<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE, 2);
   cudaCheck("kernel launch error");
   // copy result vector from device to host
   cudaMemcpy(C_h, C_d, DATA_SIZE*sizeof(float), cudaMemcpyDeviceToHost);
-  //cuda processing sequence step 3 is complete
   cudaCheck("device to host copy error or kernel launch failure");
 
+  result_check(A_h, B_h, C_h);
+
   return 0;
-}
+} // end main
 
 void result_check(float *A, float *B, float *C){
     int errors = 0;
@@ -70,9 +71,36 @@ void result_check(float *A, float *B, float *C){
             errors++;
         }
     }
-    std::cout<<"total errors:"<<errors<<std::endl;
+    if(errors == 0){
+      std::cout<<"\tCorrectness Test Passed\n";
+    }else{
+      std::cout<<"\tCorrectness Test Failed\n";
+    }
+} 
+
+// strided kernel for launch configurations
+__global__ 
+void vector_add_kernel(const float *A, const float *B, float *C, int size){
+  int idx = threadIdx.x + blockIdx.x * blockDim.x;
+  int total_threads = gridDim.x*blockDim.x;
+
+  for(int i = idx; i < size; i+=total_threads)
+    C[i] = A[i] + B[i]; // do the vector (element) add here
 }
 
+// kernel for stuyding effect of caching
+__global__ 
+void vector_add_kernel_memory(const float *A, const float *B, float *C, int size, int stride_size){
+  int idx = threadIdx.x + blockIdx.x * blockDim.x;
+  int total_threads = gridDim.x*blockDim.x;
+  int strides_per_thread = size/(total_threads*stride_size);
 
-// for (int idx = threadIdx.x+blockDim.x*blockIdx.x; idx < ds; idx+=gridDim.x*blockDim.x)         // a grid-stride loop
-// C[idx] = A[idx] + B[idx]; // do the vector (element) add here
+  for(int j = 0; j < strides_per_thread; j++){
+      int stride_begin = stride_size * idx + j * stride_size * total_threads;
+      int stride_end = stride_size + stride_begin;
+
+      for(int i = stride_begin; i < stride_end; i++ ){
+        C[i] = A[i] + B[i];
+      }
+  }
+}
