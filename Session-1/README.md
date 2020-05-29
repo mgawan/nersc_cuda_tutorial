@@ -1,5 +1,7 @@
 NERSC CUDA Tutorials Session 1
 
+
+
 >>> Plan
 1. Say Hello to CUDA!
 2. Data movement with CUDA API
@@ -19,6 +21,7 @@ NERSC CUDA Tutorials Session 1
 3. Then we need to go to CoriGPU compute node, one way is to do it is to interactively logging into the CoriGPU compute node by running the following command:
    salloc -C gpu -N 1 -t 60 -c 10 -G 1
 4. Once you're on CoriGPU compute node, you can use a GPU. You can compile C (.c) files using "gcc" compiler, for example, and you need to compile CUDA (.cu) files using "nvcc", NVIDIA's compiler driver.
+
 
 
 >>> More info on CoriGPU:
