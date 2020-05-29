@@ -20,10 +20,10 @@ Points 1., 3., and 4. are covered by ```hello.cu```. Point 2. (and, of course, p
    salloc -C gpu -N 1 -t 60 -c 10 -G 1
    ```
 4. Finally, once you're on CoriGPU compute node, you can use a GPU. You can compile C (.c) files using "gcc" compiler, for example, and you need to compile CUDA (.cu) files using "nvcc", NVIDIA's compiler driver. For example, 
-```
-nvcc memExample_gpu.cu
-srun -n1 ./a.out
-```
+   ```
+   nvcc memExample_gpu.cu
+   srun -n1 ./a.out
+   ```
 
 ## Helpful Resources
 1. https://docs-dev.nersc.gov/cgpu/
