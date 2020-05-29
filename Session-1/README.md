@@ -15,7 +15,7 @@ Points 1., 3., and 4. are covered by ```hello.cu```. Point 2. (and, of course, p
    module purge && module load esslurm
    module load cuda
    ```
-3. Then we need to go to CoriGPU compute node, one way is to do it is to interactively logging into the CoriGPU compute node by running the following command:
+3. Then we need to go to CoriGPU compute node, one way to do it is to interactively log into the CoriGPU compute node by running the following command:
    ```
    salloc -C gpu -N 1 -t 60 -c 10 -G 1
    ```
