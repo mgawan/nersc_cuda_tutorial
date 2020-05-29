@@ -9,7 +9,7 @@
 Points 1., 3., and 4. are covered by ```hello.cu```. Point 2. (and, of course, points 3. and 4. again) is covered by ```memExample_gpu.cu```. Both examples have a corresponding C version for comparison. 
 
 ## General Instructions
-1. Login to cori.nersc.gov (i.e., run ```ssh myname@cori.nersc.gov``` on Linux/UNIX terminals, and Putty (most commonly used) on Windows.)
+1. Login to ```cori.nersc.gov``` (i.e., run ```ssh myname@cori.nersc.gov``` on Linux/UNIX terminals, and Putty (most commonly used) on Windows.)
 2. Then run the following commands:
    ```
    module purge && module load esslurm
