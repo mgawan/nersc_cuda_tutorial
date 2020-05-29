@@ -10,7 +10,7 @@
 2. (and 3. and 4.) are covered by memExample_cpu.c and memExample_gpu.cu.
 
 ## General Instructions
-1. Login to cori.nersc.gov (i.e., run ssh myname@cori.nersc.gov on Linux/UNIX terminals, and Putty (most commonly used) on Windows.)
+1. Login to cori.nersc.gov (i.e., run ```ssh myname@cori.nersc.gov``` on Linux/UNIX terminals, and Putty (most commonly used) on Windows.)
 2. Then run the following commands:
    module purge && module load esslurm
    module load cuda
