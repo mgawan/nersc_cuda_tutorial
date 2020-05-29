@@ -1,8 +1,6 @@
-NERSC CUDA Tutorials Session 1
+# NERSC CUDA Tutorials Session 1
 
-
-
->>> Plan
+## Plan
 1. Say Hello to CUDA!
 2. Data movement with CUDA API
 3. Kernel writing and calling
@@ -11,9 +9,7 @@ NERSC CUDA Tutorials Session 1
 1., 3., and 4. are covered by hello.c/cu.
 2. (and 3. and 4.) are covered by memExample_cpu.c and memExample_gpu.cu.
 
-
-
->>> General instructions:
+## General Instructions
 1. Login to cori.nersc.gov (i.e., run ssh myname@cori.nersc.gov on Linux/UNIX terminals, and Putty (most commonly used) on Windows.)
 2. Then run the following commands:
    module purge && module load esslurm
@@ -22,7 +18,5 @@ NERSC CUDA Tutorials Session 1
    salloc -C gpu -N 1 -t 60 -c 10 -G 1
 4. Once you're on CoriGPU compute node, you can use a GPU. You can compile C (.c) files using "gcc" compiler, for example, and you need to compile CUDA (.cu) files using "nvcc", NVIDIA's compiler driver.
 
-
-
->>> More info on CoriGPU:
+## Resources
 1. https://docs-dev.nersc.gov/cgpu/
