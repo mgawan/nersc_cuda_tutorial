@@ -1,27 +1,14 @@
 #include <iostream>
 #include <cstdio>
-
+#include "check.hpp"
 using namespace std;
 
-//macro for checking errors thrown by CUDA API from https://github.com/olcf/cuda-training-series
-#define cudaCheck(msg) \
-    do { \
-        cudaError_t __err = cudaGetLastError(); \
-        if (__err != cudaSuccess) { \
-            fprintf(stderr, "Fatal error: %s (%s at %s:%d)\n", \
-                msg, cudaGetErrorString(__err), \
-                __FILE__, __LINE__); \
-            fprintf(stderr, "*** FAILED - ABORTING\n"); \
-            exit(1); \
-        } \
-    } while (0)
-
 #define RADIUS 2
-#define DATA_SIZE 32 + 2*RADIUS
-#define BLOCK_SIZE 32//threads per block
+#define DATA_SIZE 4 + 2*RADIUS
+#define BLOCK_SIZE 4//threads per block
 #define NBBLOCKS 1
-// kernels
 void result_check(const float *A, const float *B);
+// kernels
 __global__
 void compute_stencil_kernel(const float *in, float *out);
 __global__
@@ -54,6 +41,8 @@ int main(int ac, char * av[]){
   int blocks = NBBLOCKS;
   int threads = BLOCK_SIZE;
 
+  for(int i=0;i<DATA_SIZE;i++)
+      printf("before kernel A[%d/%d] = %f\n",i,DATA_SIZE,A_h[i]);
   //No use of shared memory
   compute_stencil_kernel<<<blocks, threads>>>(A_d, B_d);
   //compute_stencil_kernel_optimized<<<blocks, threads>>>(A_d, B_d, DATA_SIZE);
@@ -69,19 +58,19 @@ int main(int ac, char * av[]){
 void result_check(const float *A, const float *B){
     int errors = 0;
     cerr << "data size: " <<DATA_SIZE << endl;
-    //for(int i=0 ; i < RADIUS; i++){
-    //    cerr << " B["<< i << "]=" << B[i] << endl;
-    //    int j = i+NBBLOCKS*BLOCK_SIZE+RADIUS;
-    //    cerr << " B["<< j << "]=" << B[j] << endl;
-    //}
+    for(int i=0 ; i < RADIUS; i++){
+        cerr << " B["<< i << "]=" << B[i] << endl;
+        int j = i+NBBLOCKS*BLOCK_SIZE+RADIUS;
+        cerr << " B["<< j << "]=" << B[j] << endl;
+    }
     for(int i = RADIUS; i < (DATA_SIZE-RADIUS); i++){
         float tmp = 0.;
         for(int j = i-RADIUS ; j<=i+RADIUS; j++)
             tmp += A[j];
-        //if(true){//i<(RADIUS+2)){
-        //    cerr << " tmp["<< i << "]=" << tmp << endl;
-        //    cerr << " B["<< i << "]=" << B[i] << endl;
-        //}
+        if(true){//i<(RADIUS+2)){
+            cerr << " tmp["<< i << "]=" << tmp << endl;
+            cerr << " B["<< i << "]=" << B[i] << endl;
+        }
         if(tmp != B[i]){
             errors++;
         }
@@ -94,18 +83,27 @@ void result_check(const float *A, const float *B){
 }
 
 __global__
-void compute_stencil_kernel(const float *in, float *out){
+void compute_stencil_kernel(const float *in_d, float *out_d){
     int gindex = threadIdx.x + blockIdx.x * blockDim.x+RADIUS;
 
     //Applying stencil
     //For each thread of the block
+
+    if(gindex ==3){
+    for(int i=0;i<DATA_SIZE;i++)
+        printf("in kernel A[%d/%d] = %f\n",i,DATA_SIZE,in_d[i]);
+    }
     float result = 0.;
+    float tmp;
     //Run through the radius to apply physic force (here just sum) on surrounding elements
     for(int offset = -RADIUS ; offset <= RADIUS ; offset++){
-        result += in[gindex + offset];
+        tmp = in_d[gindex + offset];
+        result += tmp;
+        if(gindex ==3)
+        printf("gindex(%d) offset(%d) tmp(%f) result(%f)\n",gindex,offset,tmp, result);
     }
     //Store result in global memory
-    out[gindex] = result;
+    out_d[gindex] = result;
 }
 
 __global__
