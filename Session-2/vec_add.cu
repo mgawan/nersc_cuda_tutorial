@@ -1,22 +1,24 @@
 #include <iostream>
 
-//macro for checking errors thrown by CUDA API from https://github.com/olcf/cuda-training-series
+//some of the materials here was reused or based on NERSC/OLCF cuda training-series (https://github.com/olcf/cuda-training-series)
 #define cudaCheck(msg) \
-    do { \
-        cudaError_t __err = cudaGetLastError(); \
-        if (__err != cudaSuccess) { \
-            fprintf(stderr, "Fatal error: %s (%s at %s:%d)\n", \
-                msg, cudaGetErrorString(__err), \
-                __FILE__, __LINE__); \
-            fprintf(stderr, "*** FAILED - ABORTING\n"); \
-            exit(1); \
-        } \
-    } while (0)
+do { \
+    cudaError_t __err = cudaGetLastError(); \
+    if (__err != cudaSuccess) { \
+        fprintf(stderr, "Fatal error: %s (%s at %s:%d)\n", \
+            msg, cudaGetErrorString(__err), \
+            __FILE__, __LINE__); \
+        fprintf(stderr, "*** FAILED - ABORTING\n"); \
+        exit(1); \
+    } \
+} while (0)
 
 
 #define DATA_SIZE 1024*1024*32
-// kernel
+
 void result_check(float *A, float *B, float *C);
+
+// kernel
 __global__ 
 void vector_add_kernel(const float *A, const float *B, float *C, int size);
 __global__ 
@@ -46,14 +48,22 @@ int main(){
   cudaMemcpy(B_d, B_h, DATA_SIZE*sizeof(float), cudaMemcpyHostToDevice);
   cudaCheck("host to device copy error");
   
-  int blocks = 4;  // to set number of blocks
+  int blocks = 32;  // to set number of blocks
   int threads = 512; // to set number of threads per block
+  // set memory stride size
+  
+  //*************************************************************************************///
+  //*********** uncomment the below kernel for studying launch configurations ***********///
+  //*************************************************************************************///
 
-  //uncomment the below kernel for studying launch configurations
   //vector_add_kernel<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE);
 
-  //uncomment the below kernel for studying memory caching
-  vector_add_kernel_memory<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE, 2);
+  //*************************************************************************************///
+  //*********** uncomment the below two lines to study memory caching and coalescing ***********///
+  //*************************************************************************************///
+   int mem_stride = 1; 
+   vector_add_kernel_memory<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE, mem_stride);
+
   cudaCheck("kernel launch error");
   // copy result vector from device to host
   cudaMemcpy(C_h, C_d, DATA_SIZE*sizeof(float), cudaMemcpyDeviceToHost);
@@ -85,7 +95,7 @@ void vector_add_kernel(const float *A, const float *B, float *C, int size){
   int total_threads = gridDim.x*blockDim.x;
 
   for(int i = idx; i < size; i+=total_threads)
-    C[i] = A[i] + B[i]; // do the vector (element) add here
+    C[i] = A[i] + B[i]; 
 }
 
 // kernel for stuyding effect of caching
