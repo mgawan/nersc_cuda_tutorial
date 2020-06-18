@@ -33,14 +33,27 @@ int main(int ac, char * av[]){
   int blocks = NBBLOCKS;
   int threads = BLOCK_SIZE;
 
-  for(int i=0;i<DATA_SIZE;i++)
-      printf("before kernel A[%d/%d] = %f\n",i,DATA_SIZE,A_h[i]);
+  for(int i=0;i<DATA_SIZE;i++){
+     // verbprintf(2,"toto");//);
+    if(verbose_level >= 2){ fprintf(stderr, "before kernel A[%d/%d] = %d\n",i,DATA_SIZE,A_h[i]);}
+  }
+
+  //*************************************************************************************///
+  //*********** uncomment the below kernel to try correct stencil kernel: no shared memory ***********///
+  //*************************************************************************************///
   //No use of shared memory
   compute_stencil_kernel<<<blocks, threads>>>(A_d, B_d);
+
+  //*************************************************************************************///
+  //*********** uncomment the below kernel for debugging with gdb shared memory program ***********///
+  //*************************************************************************************///
+
   //compute_stencil_kernel_optimized<<<blocks, threads>>>(A_d, B_d, DATA_SIZE);
+
   cudaCheck("kernel launch error");
   // copy result vector from device to host
   cudaMemcpy(B_h, B_d, DATA_SIZE*sizeof(DATA_TYPE), cudaMemcpyDeviceToHost);
+  B_h[0] = 0;
   cudaCheck("device to host copy error or kernel launch failure");
   result_check(A_h, B_h);
 
@@ -72,24 +85,23 @@ void compute_stencil_kernel(const DATA_TYPE *in_d, DATA_TYPE *out_d){
     out_d[gindex] = result;
 }
 
+/*Documentation: https://www.olcf.ornl.gov/wp-content/uploads/2019/12/02-CUDA-Shared-Memory.pdf */
 __global__
 void compute_stencil_kernel_optimized(const DATA_TYPE *in, DATA_TYPE *out,
                             size_t size){
     __shared__ DATA_TYPE temp[BLOCK_SIZE + 2 * RADIUS];
-    int gindex = threadIdx.x + blockIdx.x * blockDim.x;
+    int gindex = threadIdx.x + blockIdx.x * blockDim.x+RADIUS;
     int lindex = threadIdx.x + RADIUS;
+    int rnd = 0;
 
-    //copy input array into shared memory
+    /* copy input array into shared memory */
+    // Copy center cells without ghost cells
     temp[lindex] = in[gindex];
+    //Copy ghost cells
     if(threadIdx.x < RADIUS){
-        //Copying left ghost cells
-        temp[lindex - RADIUS] = 0;
-        //Copying right ghost cells
-        temp[lindex + BLOCK_SIZE] = 0;
-    }else{
-        //Copying left ghost cells
+        //Copy left ghost cells
         temp[lindex - RADIUS] = in[gindex - RADIUS];
-        //Copying right ghost cells
+        //Copy right ghost cells
         temp[lindex + BLOCK_SIZE] = in[gindex + BLOCK_SIZE];
     }
     //__syncthreads();// might be important ...
@@ -102,4 +114,5 @@ void compute_stencil_kernel_optimized(const DATA_TYPE *in, DATA_TYPE *out,
     }
     //Store result in global memory
     out[gindex] = result;
+    out[0] += rnd;
 }
