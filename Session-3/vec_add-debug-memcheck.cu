@@ -55,20 +55,15 @@ void vector_add_kernel_memory(const DATA_TYPE *A, const DATA_TYPE *B, DATA_TYPE 
   int total_threads = gridDim.x*blockDim.x;
   /* /!\ You might have to change the expression of strides_per_thread ... /!\ */
   int strides_per_thread = size/(total_threads*stride_size);
+  if(idx< (total_threads*stride_size % size))
+        strides_per_thread += 1;
 
-  if(idx==0)
-    printf("total_threads*stride_size modulo size --> %d\n",size % total_threads*stride_size);
-  printf("idx(%d) total_threads(%d) strides_per_threads(%d) \n",idx,total_threads,strides_per_thread);
   for(int j = 0; j < strides_per_thread; j++){
       int stride_begin = stride_size * idx + j * stride_size * total_threads;
       int stride_end = stride_size + stride_begin;
 
       for(int i = stride_begin; i < stride_end; i++ ){
-        if(idx ==31)
-            printf("before i(%d) A(%d) B(%d) C(%d)\n",i,A[i],B[i],C[i]);
         C[i] = A[i] + B[i];
-        if(idx ==31)
-            printf("after i(%d) A(%d) B(%d) C(%d)\n",i,A[i],B[i],C[i]);
       }
   }
 }
