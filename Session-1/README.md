@@ -1,12 +1,12 @@
 # NERSC CUDA Tutorials Session 1
 
-## Plan
+## Agenda
 1. Say Hello to CUDA!
-2. Data movement with CUDA API
-3. Kernel writing and calling
-4. Compiling and executing
+2. Writing a simple kernel and invoking one.
+3. Compiling and executing your first CUDA program.
+4. Data movement with CUDA API.
 
-Points 1., 3., and 4. are covered by ```hello.cu```. Point 2. (and, of course, points 3. and 4. again) is covered by ```memExample_gpu.cu```. Both examples have a corresponding C version for comparison. 
+Points 1., 2., and 3. are covered via ```hello.cu``` program. Point 4. (and, of course, with the inclusion of concepts learned from points before it) is covered by ```memExample_gpu.cu```. Both examples have a corresponding C version for comparison. 
 
 ## General Instructions
 1. Login to ```cori.nersc.gov``` (i.e., run ```ssh yourusername@cori.nersc.gov``` on Linux/UNIX terminals, and Putty (most commonly used) on Windows.)
