@@ -1,6 +1,6 @@
 # NERSC CUDA Tutorials Session 4
 
-This tutorial introduces basic commands to generate profiler reports using the NVidia tools `NSight Sytems` and 'NSight Compute`.  As a trial kernel, we take the vector addition example for Tutorial Session 2.  When generating the profiler reports on remote systems via SSH (perhaps through multiple firewalls), a convenient workflow could be to:
+This tutorial introduces basic commands to generate profiler reports using the NVidia tools `NSight Sytems` and `NSight Compute`.  As a trial kernel, we take the vector addition example for Tutorial Session 2.  When generating the profiler reports on remote systems via SSH (perhaps through multiple firewalls), a convenient workflow could be to:
 
 - generate the reports on the remote system using the profiling tool's respective command line interface, then transfer reports to a local machine for analysis with the visual profiling interface,
 
