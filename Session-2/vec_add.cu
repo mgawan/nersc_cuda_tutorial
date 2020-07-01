@@ -49,20 +49,20 @@ int main(){
   cudaCheck("host to device copy error");
   
   int blocks = 1;  // to set number of blocks
-  int threads = 512; // to set number of threads per block
+  int threads = 256; // to set number of threads per block
   // set memory stride size
   
   //*************************************************************************************///
   //*********** uncomment the below kernel for studying launch configurations ***********///
   //*************************************************************************************///
 
-  vector_add_kernel<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE);
+  //vector_add_kernel<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE);
 
   //*************************************************************************************///
   //*********** uncomment the below two lines to study memory caching and coalescing ***********///
   //*************************************************************************************///
-  //  int mem_stride = 1; 
-  //  vector_add_kernel_memory<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE, mem_stride);
+   int mem_stride = 8; 
+   vector_add_kernel_memory<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE, mem_stride);
 
   cudaCheck("kernel launch error");
   // copy result vector from device to host
