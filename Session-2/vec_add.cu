@@ -88,7 +88,7 @@ void result_check(float *A, float *B, float *C){
     }
 } 
 
-// strided kernel for launch configurations
+// kernel for launch configurations
 __global__ 
 void vector_add_kernel(const float *A, const float *B, float *C, int size){
   int idx = threadIdx.x + blockIdx.x * blockDim.x;
