@@ -1,6 +1,11 @@
 # NERSC CUDA Tutorials Session 3
 
-This tutorial session consists of two different parts. The first part will deal with debugging thanks to printf statement in a very simple CUDA kernel (not many threads). The second part of this tutorial consists in using cuda-memcheck to detect an error in dealing with read/write in arrays, due to wrong usage of cuda threads identification.
+This tutorial session consists of two different parts. 
+The first part will deal with debugging thanks to printf statement in a very simple CUDA kernel (not many threads).
+For this first part, the file to modify (debug) is `vec_add-debug-printf.cu`.
+The second part of this tutorial consists in using cuda-memcheck, and cuda-gdb, to detect an error in dealing with read/write in arrays, due to wrong usage of cuda threads identification.
+For this second part, the file to modify (debug) is `vec_add-debug-memcheck.cu`.
+The file `check-debug-printf.hpp` must remain unchanged. You should not need to look into it.
 
 ## Compiling Kernels
 After connecting to a gpu in interactive just use the `make` command.
@@ -8,7 +13,7 @@ After connecting to a gpu in interactive just use the `make` command.
 ## Kernel Launch Configurations 
 To run the printf version: `srun ./vec_add-debug-printf.exe`
 To run the cuda-memcheck version: `srun cuda-memcheck ./vec_add-debug-memcheck.exe`
-To run the cuda-gdb version: `srun --pty cuda-gdb ./vec_add-debug-memcheck.exe`
+To use cuda-gdb to debug the cuda-memcheck version: `srun --pty cuda-gdb ./vec_add-debug-memcheck.exe`
 
 ## Debug with printf
 Running the program you should observe:
@@ -24,7 +29,7 @@ error in: 34 / 68 cpu 0 gpu
 	Correctness Test Failed
 ```
 
-Your mission, if you accept it, it is to get the correct answer during the check function.
+**Your mission**, if you accept it, it is to get the correct answer during the check function.
 Obtaining:
 
 ```
