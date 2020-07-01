@@ -38,7 +38,7 @@ Some additional command line arguments you may find useful:
 For more information, consult the official NSight Systems documentation (listed above).  You can open a report with:
 
 ```
-nsight-nsys nsys_profile.qdrep
+nsight-sys nsys_profile.qdrep
 ```
 
 ## NSight Compute
