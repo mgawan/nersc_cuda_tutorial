@@ -17,7 +17,7 @@ Points 1., 2., and 3. are covered via ```hello.cu``` program. Point 4. (and, of 
    ```
 3. Next, we need to go to CoriGPU compute node, one way to do it is to interactively log into the CoriGPU compute node by running the following command:
    ```
-   salloc -C gpu -N 1 -t 60 -c 10 -G 1
+   salloc -C gpu -N 1 -t 60 -c 10 -G 1 -A gpu4sci
    ```
 4. Finally, once you're on CoriGPU compute node, you can use a GPU. You can compile C (.c) files using "gcc" compiler, for example, and you need to compile CUDA (.cu) files using "nvcc", NVIDIA's compiler driver. For example, 
    ```
