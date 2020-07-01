@@ -1,7 +1,11 @@
 #include <iostream>
 #include "check-debug-printf.hpp"
 
-/* /!\ You might have to change the value of this constant ... /!\ */
+/****** IMPORTANT *********
+ * If it is NOT written you might have to change some code,
+ * It means there is a big chance you don't have to.
+ */
+/* /!\ You might have to change the value of this constant ... (+1 or -1) /!\ */
 #define NBBLOCKS 4
 
 // kernel
@@ -18,8 +22,8 @@ int main(){
   C_h = new DATA_TYPE[DATA_SIZE];
 
   for (int i = 0; i < DATA_SIZE; i++){  // initializing host arrays
-    A_h[i] = i;//rand()/(DATA_TYPE)RAND_MAX;
-    B_h[i] = i;//rand()/(DATA_TYPE)RAND_MAX;
+    A_h[i] = i;
+    B_h[i] = i;
     C_h[i] = 0;
     }
 
@@ -35,7 +39,7 @@ int main(){
   int blocks = NBBLOCKS;  // to set number of blocks
   int threads = NB_THREADS_PER_BLOCK; // to set number of threads per block
 
-  //uncomment the below kernel for studying memory caching
+  //Launching the kernel
   vector_add_kernel_memory<<<blocks, threads>>>(A_d, B_d, C_d, DATA_SIZE,1);
   cudaCheck("kernel launch error");
   // copy result vector from device to host
@@ -48,7 +52,8 @@ int main(){
 } // end main
 
 
-// kernel for stuyding effect of caching
+/********************************** IMPORTANT *****************/
+/* ************************* /!\ kernel to debug /!\ */
 __global__
 void vector_add_kernel_memory(const DATA_TYPE *A, const DATA_TYPE *B, DATA_TYPE *C, int size, int stride_size){
   int idx = threadIdx.x + blockIdx.x * blockDim.x;
