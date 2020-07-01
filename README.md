@@ -1,6 +1,6 @@
 # NERSC CUDA Tutorial
 
-NERSC CUDA Tutorial session materials for [GPUs for Science 2020](https://www.nersc.gov/users/training/gpus-for-science/gpus-for-science-2020/) prepared by:
+NERSC CUDA Tutorial session materials for [GPUs for Science 2020](https://www.nersc.gov/users/training/gpus-for-science/gpus-for-science-2020/) prepared and taught by:
 
 * Session - 1: Dossay Oryspayev
 * Session - 2: Muaaz Awan
